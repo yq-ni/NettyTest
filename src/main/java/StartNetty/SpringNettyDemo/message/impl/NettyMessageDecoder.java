@@ -12,7 +12,7 @@ public class NettyMessageDecoder implements AbstractDecoder<NettyMessage> {
     @Override
     public NettyMessage decode(ByteBuffer byteBuffer) throws Exception{
         if (byteBuffer == null || byteBuffer.capacity() < Header.HEADER_LENGTH) {
-            throw new Exception("invalid input");
+            return null;
         }
         NettyMessage message = new NettyMessage();
         Header header = new Header();

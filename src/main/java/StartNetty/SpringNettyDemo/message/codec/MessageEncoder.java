@@ -25,6 +25,9 @@ public class MessageEncoder extends MessageToByteEncoder<AbstractMessage>{
     @Override
     protected void encode(ChannelHandlerContext ctx, AbstractMessage msg, ByteBuf out) throws Exception {
         ByteBuffer byteBuffer = abstractEncoder.encode(msg);
+        if (byteBuffer == null) {
+            return;
+        }
         int length = byteBuffer.remaining();
         out.writeInt(length);
         out.writeBytes(byteBuffer);

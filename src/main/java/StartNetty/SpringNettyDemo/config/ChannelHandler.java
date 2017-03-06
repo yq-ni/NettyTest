@@ -18,6 +18,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public @interface ClientHandler {
+public @interface ChannelHandler {
     int order() default 0;
 }

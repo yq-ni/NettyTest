@@ -12,7 +12,7 @@ public class NettyMessageEncoder implements AbstractEncoder<NettyMessage> {
     @Override
     public ByteBuffer encode(NettyMessage message) throws Exception {
         if (message == null || message.getHeader() == null) {
-            throw new Exception("invalid msg");
+            return null;
         }
         Header header = message.getHeader();
         int bodyLength = message.getBody() == null ? 0 : message.getBody().length() ;
