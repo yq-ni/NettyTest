@@ -5,12 +5,13 @@ import StartNetty.SimpleNettyProtocol.Message.Struct.NettyMessage;
 import StartNetty.SpringNettyDemo.config.ServerHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by nyq on 2017/3/5.
  */
 
-@ServerHandler(order = 1)
+@ServerHandler
 public class LoginAuthResHandler extends ChannelHandlerAdapter{
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

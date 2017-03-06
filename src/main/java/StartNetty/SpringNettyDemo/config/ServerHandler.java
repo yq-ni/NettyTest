@@ -3,6 +3,7 @@ package StartNetty.SpringNettyDemo.config;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

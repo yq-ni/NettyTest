@@ -10,8 +10,4 @@
 
     <import resource="codec.xml"/>
 
-    <bean id="server" class="StartNetty.SpringNettyDemo.server.Server">
-        <constructor-arg value="${server.port}" />
-    </bean>
-
 </beans>

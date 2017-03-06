@@ -14,4 +14,6 @@
         <constructor-arg value="${server.port}" />
     </bean>
 
+    <bean id="loginAuthResHandler" class="StartNetty.SpringNettyDemo.server.LoginAuthResHandler" scope="prototype"/>
+
 </beans>
