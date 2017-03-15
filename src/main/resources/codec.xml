@@ -6,9 +6,9 @@
 
     <context:property-placeholder location="netty.properties" />
 
-    <bean id="nettyMessageDecoder" class="StartNetty.SpringNettyDemo.message.impl.NettyMessageDecoder" />
+    <bean id="nettyMessageDecoder" class="StartNetty.SpringNettyDemo.message.codec.JavaSerializable.NettyMessageDecoder" />
 
-    <bean id="nettyMessageEncoder" class="StartNetty.SpringNettyDemo.message.impl.NettyMessageEncoder" />
+    <bean id="nettyMessageEncoder" class="StartNetty.SpringNettyDemo.message.codec.JavaSerializable.NettyMessageEncoder" />
 
     <bean id="messageDecoder" class="StartNetty.SpringNettyDemo.message.codec.MessageDecoder" scope="prototype">
         <constructor-arg value="1048576" />

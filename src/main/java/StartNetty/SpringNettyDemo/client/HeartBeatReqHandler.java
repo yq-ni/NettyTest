@@ -1,11 +1,13 @@
 package StartNetty.SpringNettyDemo.client;
 
 import StartNetty.SpringNettyDemo.config.ChannelHandler;
-import StartNetty.SpringNettyDemo.message.impl.Header;
-import StartNetty.SpringNettyDemo.message.impl.MessageType;
-import StartNetty.SpringNettyDemo.message.impl.NettyMessage;
+import StartNetty.SpringNettyDemo.message.struct.MessageType;
+import StartNetty.SpringNettyDemo.message.struct.NettyMessage;
+import StartNetty.SpringNettyDemo.services.HelloService;
+import StartNetty.SpringNettyDemo.services.Person;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ResourceLeakDetector;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -24,24 +26,23 @@ public class HeartBeatReqHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         NettyMessage nettyMessage = (NettyMessage) msg;
-        Header header = nettyMessage.getHeader();
-        if (header != null && header.getType() == MessageType.LOGIN_RES.value) {
-            heartBeat = ctx.executor().scheduleAtFixedRate(new HeartBeatTask(ctx), 0, 5, TimeUnit.SECONDS);
-            ctx.executor().scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    NettyMessage n = new NettyMessage();
-                    Header h = new Header();
-                    h.setType(MessageType.SERVICE_REQ.value);
-                    n.setBody("This is a service task.");
-                    n.setHeader(h);
-                    ctx.writeAndFlush(n);
-                }
-            }, 2, 3, TimeUnit.SECONDS);
-
-            LOGGER.info("Login successfully! Start to send heartbeat...");
+        if (nettyMessage.getType() == MessageType.LOGIN_RES.value) {
+            ServiceHandler serviceHandler = ctx.channel().pipeline().get(ServiceHandler.class);
+            if (!serviceHandler.isLogin()) {
+                serviceHandler.setLogin(true);
+                ctx.executor().scheduleAtFixedRate(new HeartBeatTask(ctx), 0, 5, TimeUnit.SECONDS);
+                ctx.executor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (serviceHandler.getList().size() != 0) {
+                            ctx.writeAndFlush(serviceHandler.getList().poll());
+                        }
+                    }
+                });
+                LOGGER.info("Login successfully! Start to send heartbeat...");
+            }
         }
-        else if (header != null && header.getType() == MessageType.HEARTBEAT_RES.value) {
+        else if (nettyMessage.getType() == MessageType.HEARTBEAT_RES.value) {
 
         }
         else {
@@ -67,9 +68,7 @@ public class HeartBeatReqHandler extends ChannelHandlerAdapter {
         @Override
         public void run() {
             NettyMessage n = new NettyMessage();
-            Header h = new Header();
-            h.setType(MessageType.HEARTBEAT_REQ.value);
-            n.setHeader(h);
+            n.setType(MessageType.HEARTBEAT_REQ.value);
             ctx.writeAndFlush(n);
         }
     }

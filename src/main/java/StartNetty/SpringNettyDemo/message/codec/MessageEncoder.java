@@ -1,5 +1,6 @@
 package StartNetty.SpringNettyDemo.message.codec;
 
+import StartNetty.SpringNettyDemo.config.ChannelHandler;
 import StartNetty.SpringNettyDemo.message.AbstractEncoder;
 import StartNetty.SpringNettyDemo.message.AbstractMessage;
 import io.netty.buffer.ByteBuf;
@@ -12,7 +13,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by nyq on 2017/3/5.
  */
-
+@ChannelHandler(order = 0)
 public class MessageEncoder extends MessageToByteEncoder<AbstractMessage>{
 
     private AbstractEncoder abstractEncoder;
@@ -24,13 +25,7 @@ public class MessageEncoder extends MessageToByteEncoder<AbstractMessage>{
 
     @Override
     protected void encode(ChannelHandlerContext ctx, AbstractMessage msg, ByteBuf out) throws Exception {
-        ByteBuffer byteBuffer = abstractEncoder.encode(msg);
-        if (byteBuffer == null) {
-            return;
-        }
-        int length = byteBuffer.remaining();
-        out.writeInt(length);
-        out.writeBytes(byteBuffer);
+        abstractEncoder.encode(out, msg);
     }
 
 }

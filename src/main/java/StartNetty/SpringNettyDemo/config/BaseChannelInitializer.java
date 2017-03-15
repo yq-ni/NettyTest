@@ -1,7 +1,5 @@
 package StartNetty.SpringNettyDemo.config;
 
-import StartNetty.SpringNettyDemo.message.codec.MessageDecoder;
-import StartNetty.SpringNettyDemo.message.codec.MessageEncoder;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -48,8 +46,6 @@ public class BaseChannelInitializer extends ChannelInitializer<SocketChannel> {
                 return i-j;
             }
         });
-        handlers.addFirst(ctx.getBean(MessageDecoder.class));
-        handlers.addFirst(ctx.getBean(MessageEncoder.class));
         for (Object h : handlers) ch.pipeline().addLast((ChannelHandlerAdapter)h);
     }
 }

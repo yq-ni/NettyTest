@@ -76,7 +76,7 @@ public class Client {
                     header.setType(MessageType.SERVICE_REQ.value());
                     message.setHeader(header);
                     message.setBody("This is the body");
-                    LOG.info("Client send service message: " + message);
+                    LOG.info("Client send executor message: " + message);
                     future.channel().writeAndFlush(message);
                 }
             }).start();

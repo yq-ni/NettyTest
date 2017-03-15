@@ -2,10 +2,8 @@ package StartNetty.SpringNettyDemo.server;
 
 import StartNetty.SimpleNettyProtocol.Client.HeartBeatReqHandler;
 import StartNetty.SpringNettyDemo.config.ChannelHandler;
-import StartNetty.SpringNettyDemo.config.SharableChannelHandler;
-import StartNetty.SpringNettyDemo.message.impl.Header;
-import StartNetty.SpringNettyDemo.message.impl.MessageType;
-import StartNetty.SpringNettyDemo.message.impl.NettyMessage;
+import StartNetty.SpringNettyDemo.message.struct.MessageType;
+import StartNetty.SpringNettyDemo.message.struct.NettyMessage;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -21,13 +19,13 @@ public class HeartBeatResHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (! LoginAuthResHandler.nodeRecord.containsKey(ctx.channel().remoteAddress().toString())) {
+        if (! LoginAuthResHandler.nodeRecord.containsKey(ctx.channel().remoteAddress().toString())
+                || ((NettyMessage) msg).getType() != MessageType.HEARTBEAT_REQ.value) {
             ctx.fireChannelRead(msg);
         }
         else {
             NettyMessage n = new NettyMessage();
-            Header h = new Header();
-            h.setType(MessageType.HEARTBEAT_RES.value);
+            n.setType(MessageType.HEARTBEAT_RES.value);
             ctx.writeAndFlush(n);
         }
     }

@@ -19,9 +19,9 @@ public class ServiceRespHandler extends ChannelHandlerAdapter {
         NettyMessage message = (NettyMessage) msg;
         Header header = message.getHeader();
         if (header != null && header.getType() == MessageType.SERVICE_REQ.value()) {
-            LOGGER.info("Receive client service req message: " + message);
+            LOGGER.info("Receive client executor req message: " + message);
             NettyMessage resp_msg = buildServiceResp();
-            LOGGER.info("Send service resp to client: " + resp_msg);
+            LOGGER.info("Send executor resp to client: " + resp_msg);
             ctx.writeAndFlush(resp_msg);
         }
         else {

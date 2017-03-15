@@ -6,13 +6,9 @@
 
     <context:property-placeholder location="netty.properties" />
     <context:component-scan base-package="StartNetty.SpringNettyDemo.client" />
+    <context:component-scan base-package="StartNetty.SpringNettyDemo.services" />
 
     <import resource="codec.xml" />
-
-    <bean id="client" class="StartNetty.SpringNettyDemo.client.Client" >
-        <constructor-arg value="${server.host}" />
-        <constructor-arg value="${server.port}"/>
-    </bean>
 
 
 </beans>

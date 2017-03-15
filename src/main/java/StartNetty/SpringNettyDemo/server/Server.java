@@ -1,15 +1,11 @@
 package StartNetty.SpringNettyDemo.server;
 
 import StartNetty.SpringNettyDemo.config.BaseChannelInitializer;
-import StartNetty.SpringNettyDemo.config.SharableChannelHandler;
-import StartNetty.SpringNettyDemo.message.codec.MessageDecoder;
-import StartNetty.SpringNettyDemo.message.codec.MessageEncoder;
+import StartNetty.SpringNettyDemo.server.servicesImpl.RPCService;
+import StartNetty.SpringNettyDemo.server.executor.ServicePool;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -20,6 +16,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by nyq on 2017/3/5.
@@ -47,6 +44,14 @@ public class Server  {
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new BaseChannelInitializer(ctx));
 
+        Map<String, Object> handlerMap = ctx.getBeansWithAnnotation(RPCService.class);
+        if (handlerMap != null) {
+            ConcurrentHashMap map = ServicePool.getHandlerMap();
+            handlerMap.forEach((name, bean)->{
+                map.put(bean.getClass().getAnnotation(RPCService.class).value().getName(), bean);
+            });
+        }
+
         try {
             ChannelFuture f = serverBootstrap.bind(Integer.parseInt(port)).sync();
             f.channel().closeFuture().sync();
@@ -58,8 +63,10 @@ public class Server  {
 
     }
 
-    public static void main(String[] args) {
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("server-spring.xml");
-        ctx.getBean(Server.class).start();
+    public static class StartServer {
+        public static void main(String[] args) {
+            ApplicationContext ctx = new ClassPathXmlApplicationContext("server-spring.xml");
+            ctx.getBean(Server.class).start();
+        }
     }
 }

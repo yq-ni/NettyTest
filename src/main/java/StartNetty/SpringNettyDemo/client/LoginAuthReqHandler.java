@@ -1,12 +1,14 @@
 package StartNetty.SpringNettyDemo.client;
 
 import StartNetty.SpringNettyDemo.config.ChannelHandler;
-import StartNetty.SpringNettyDemo.config.SharableChannelHandler;
-import StartNetty.SpringNettyDemo.message.impl.Header;
-import StartNetty.SpringNettyDemo.message.impl.NettyMessage;
+import StartNetty.SpringNettyDemo.message.struct.MessageType;
+import StartNetty.SpringNettyDemo.message.struct.NettyMessage;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -24,6 +26,7 @@ public class LoginAuthReqHandler extends ChannelHandlerAdapter {
         LOGGER.info("send login request to "+ ctx.channel().remoteAddress().toString());
     }
 
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
@@ -32,9 +35,9 @@ public class LoginAuthReqHandler extends ChannelHandlerAdapter {
 
     private NettyMessage buildRequest() {
         NettyMessage nettyMessage = new NettyMessage();
-        Header h = new Header();
-        h.setType(1);
-        nettyMessage.setHeader(h);
+        nettyMessage.setType(MessageType.LOGIN_REQ.value);
         return nettyMessage;
     }
+
+
 }

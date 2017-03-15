@@ -1,19 +1,27 @@
-package StartNetty.SpringNettyDemo.message.impl;
+package StartNetty.SpringNettyDemo.message.struct;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import StartNetty.SpringNettyDemo.message.AbstractMessage;
 
-import java.util.Formatter;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nyq on 2017/3/5.
  */
-public class Header {
-    public static final int HEADER_LENGTH = 4 + 4 + 4;
-
+public class NettyMessage extends AbstractMessage implements Serializable {
     private int crcCode = 0x12340101;
     private int type;
     private int priority;
+    private Object attachment;
+
+    public Object getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Object attachment) {
+        this.attachment = attachment;
+    }
 
     public int getPriority() {
         return priority;
@@ -41,6 +49,6 @@ public class Header {
 
     @Override
     public String toString() {
-        return "crcCode:" + crcCode + " type:" + type + " priority:" + priority ;
+        return "crcCode:" + crcCode + " type:" + type + " priority:" + priority + " attachment: " + attachment;
     }
 }

@@ -8,6 +8,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ServerTest {
     public static void main(String[] args) {
 
-        new ClassPathXmlApplicationContext("server-spring.xml");
+        new ClassPathXmlApplicationContext("server-spring.xml").getBean(Server.class).start();
     }
 }

@@ -19,7 +19,7 @@ public class ServiceReqHandler extends ChannelHandlerAdapter{
         NettyMessage message = (NettyMessage)msg;
         Header header = message.getHeader();
         if (header != null && header.getType() == MessageType.SERVICE_RESP.value()) {
-            LOGGER.info("Client receive service resp message: " + message);
+            LOGGER.info("Client receive executor resp message: " + message);
         }
         else {
             ctx.fireChannelRead(msg);

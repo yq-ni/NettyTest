@@ -1,4 +1,4 @@
-package StartNetty.SpringNettyDemo.message.impl;
+package StartNetty.SpringNettyDemo.message.struct;
 
 /**
  * Created by nyq on 2017/3/5.

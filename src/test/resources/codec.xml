@@ -6,11 +6,11 @@
 
     <context:property-placeholder location="netty.properties" />
 
-    <bean id="nettyMessageDecoder" class="StartNetty.SpringNettyDemo.message.impl.NettyMessageDecoder" />
+    <bean id="nettyMessageDecoder" class="StartNetty.SpringNettyDemo.message.codec.Kryo.KryoDecoder" />
 
-    <bean id="nettyMessageEncoder" class="StartNetty.SpringNettyDemo.message.impl.NettyMessageEncoder" />
+    <bean id="nettyMessageEncoder" class="StartNetty.SpringNettyDemo.message.codec.Kryo.KryoEncoder" />
 
-    <bean id="messageDecoder" class="StartNetty.SpringNettyDemo.message.codec.MessageDecoder" scope="prototype" lazy-init="false">
+    <bean id="messageDecoder" class="StartNetty.SpringNettyDemo.message.codec.MessageDecoder" scope="prototype">
         <constructor-arg value="1048576" />
         <constructor-arg value="0" />
         <constructor-arg value="4" />
@@ -19,6 +19,6 @@
     </bean>
 
     <bean id="messageEncoder" class="StartNetty.SpringNettyDemo.message.codec.MessageEncoder" scope="prototype">
-        <constructor-arg ref="nettyMessageEncoder" />
+        <constructor-arg ref="nettyMessageDecoder" />
     </bean>
 </beans>
