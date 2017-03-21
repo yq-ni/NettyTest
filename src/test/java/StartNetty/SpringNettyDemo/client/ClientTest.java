@@ -48,5 +48,6 @@ public class ClientTest {
         }
 
         latch.await(10, TimeUnit.SECONDS);
+        System.out.println(latch.getCount());
     }
 }

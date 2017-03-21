@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.Lock;
@@ -32,9 +33,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class RemoteServices {
 
     private static ApplicationContext ctx;
-    private final ConcurrentHashMap<String, ChannelFuture> map = new ConcurrentHashMap<>();
+    private volatile HashMap<String, ChannelFuture> map = new HashMap<>();
     private NioEventLoopGroup group;
     private Bootstrap bootstrap;
+    private final Object lock = new Object();
 
     @Autowired
     public RemoteServices(ApplicationContext ctx) {
@@ -73,7 +75,7 @@ public class RemoteServices {
 
     public ChannelFuture connect(String address) throws InterruptedException {
         if (map.get(address) == null) {
-            synchronized (map) {
+            synchronized (lock) {
                 if (map.get(address) == null) {
                     String[] host_port = address.split(":");
                     ChannelFuture f = bootstrap.connect(host_port[0], Integer.parseInt(host_port[1])).sync();

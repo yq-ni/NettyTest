@@ -26,14 +26,16 @@ public class HeartBeatReqHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         NettyMessage nettyMessage = (NettyMessage) msg;
-        if (nettyMessage.getType() == MessageType.LOGIN_RES.value) {
+        if (nettyMessage != null && nettyMessage.getType() == MessageType.LOGIN_RES.value) {
             ServiceHandler serviceHandler = ctx.channel().pipeline().get(ServiceHandler.class);
             if (!serviceHandler.isLogin()) {
-                serviceHandler.setLogin(true);
                 ctx.executor().scheduleAtFixedRate(new HeartBeatTask(ctx), 0, 5, TimeUnit.SECONDS);
                 ctx.executor().execute(new Runnable() {
                     @Override
                     public void run() {
+                        synchronized (serviceHandler.getList()) {
+                            serviceHandler.setLogin(true);
+                        }
                         while (serviceHandler.getList().size() != 0) {
                             ctx.writeAndFlush(serviceHandler.getList().poll());
                         }

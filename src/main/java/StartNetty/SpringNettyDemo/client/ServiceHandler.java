@@ -8,12 +8,14 @@ import StartNetty.SpringNettyDemo.message.struct.Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
+import sun.misc.Unsafe;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by nyq on 2017/3/13.
@@ -25,7 +27,7 @@ public class ServiceHandler extends ChannelHandlerAdapter{
     private Channel channel;
     private final ConcurrentHashMap<String, ResFuture> map = new ConcurrentHashMap<>();
     private volatile boolean isLogin = false;
-    private LinkedList<NettyMessage> list = new LinkedList<>(); // just synchronized for add but not poll for the volatile isLogin
+    private final LinkedList<NettyMessage> list = new LinkedList<>(); // just synchronized for add but not poll
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -51,7 +53,8 @@ public class ServiceHandler extends ChannelHandlerAdapter{
     public ResFuture sendMessage(NettyMessage nettyMessage) {
         if (!isLogin) {
             synchronized (list) {
-                list.add(nettyMessage);
+                if (!isLogin)
+                    list.add(nettyMessage);
             }
         }
         else {
